@@ -3,6 +3,7 @@ This script builds OPEX sampling plans and data entry sheets.  It also performs 
 Concepts implemented:
 - building spreadsheets based on cell names
 - conerting cell data into data inputs for manipulation & calculation
+- filtering non-numeric and blank data out of array to isolate numbers for calculation
 - converting spreadsheet data into arrays for manipulation, then writing the arrays back into spreadsheet
 - array usage greatly increases the speed of execution vs trying to do everythign strictly using the spreadsheets for data
 - custom sidebar for analysis
