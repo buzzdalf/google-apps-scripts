@@ -1,0 +1,77 @@
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script>
+  $(function() {
+    $('#btnAll').hide();
+    $('#btnOpen').hide();
+    $('#optionList').on('change', function() {
+        $('#btnAll').show();
+        $('#btnOpen').show();
+    });
+    
+    $('#btnAll').on('click', function() {
+      var all = true;
+      searchList(all);
+    });
+    $('#btnOpen').on('click', function() {
+      var all = false;
+      searchList(all);
+    });
+    
+    google.script.run
+      .withSuccessHandler(showOptions)
+      .withFailureHandler(
+      function(msg) {
+        showStatus(msg, $('#button-bar'));
+      })
+      .findUnique();
+  });
+  
+  function searchList(all) {
+    var selected = $('#optionList').val();
+    google.script.run
+      .withSuccessHandler(showList)
+      .withFailureHandler(
+      function(msg) {
+        showStatus(msg, $('#button-bar'));
+      })
+      .findAudits(selected,all);
+  }
+
+  function showOptions(newdata) {
+    var list = $('#optionList');
+    list.empty();
+    $.each( newdata, function( index, value ){
+    list.append(new Option(value));
+    });
+  }
+  
+  function showList(listRows) {
+    var list = $('#auditList');
+    list.empty();
+    if (listRows.length) {
+      $('#footer').hide();
+      for (var i = 0; i < listRows.length; i++) {
+        // build field name on the fly, formatted field-1234
+        var str = '' + i;
+        var fieldId = 'field-' + ('0000' + str).substring(str.length);
+        // If this field # doesn't already exist on the page, create it
+        if (!$('#'+fieldId).length) {
+          var newField = $($.parseHTML('<button id="'+fieldId+'"></button>'));
+          list.append(newField);
+        }
+        var row = Number(listRows[i].record) + 1;
+        // Replace content of the field div with new record
+        $('#'+fieldId).replaceWith('<button id="'+fieldId+'" class="div-table-row" type="button" onclick="google.script.run.gotoRow('+row+')"></button>');
+        $('#'+fieldId).append($('<div class="div-table-th">' + "row " + row + '</div>'))
+                      .append('<div class="div-table-td">' + "date: " + listRows[i].timestamp + '</div>');
+      }
+    } else {
+      $('#footer').show();
+    }
+  }
+  
+  function showStatus(msg) {
+    $('#sidebar-status').removeClass().html(msg);
+  }
+
+</script>

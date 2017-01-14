@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<?!= HtmlService.createHtmlOutputFromFile('Stylesheet').getContent(); ?>
+<head>
+    <base target="_top">
+    <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons.css">
+</head>
+<body>
+  <div class="sidebar">
+    <div class="block">
+      <button type="button" class="" onclick="google.script.host.close()">Close Search Menu</button>
+      <br>
+      <br>
+    </div>
+    <div>
+      <h3>Select Search Criteria:</h3>
+    </div>
+    <div class="block">
+      <select id="optionList" name="optionList"> 
+        <option>Loading...</option>    
+      </select>
+      <br>
+    </div>
+    <div class="block">
+      <button id="btnAll" type="button" class="action">Find All Audits</button>
+      <button id="btnOpen" type="button" class="action">Find Open Audits</button>
+    </div>
+    <div class="block div-table" id="auditList">
+    </div>
+    <div id="sidebar-status"></div>
+  </div>
+  <div class="sidebar bottom" id="footer">
+    <img alt="Add-on logo" width="25" src="https://googledrive.com/host/0B0G1UdyJGrY6XzdjQWF4a1JYY1k/apps-script_2x.png">
+    <span class="gray">by: Bill Steinberger</span>
+  </div>
+</body>
+
+<!-- Use a templated HTML printing scriptlet to import JavaScript. -->
+<?!= HtmlService.createHtmlOutputFromFile('SAJavascript').getContent(); ?>
+
+</html>
