@@ -1,4 +1,4 @@
-This script creates metric graphs based on spreadsheet data and exports those graphs to pdf files in a specific folder.  It then creates a google doc file with all the graphs in it, loaded in the intended order for posting on the metric board.
+This script creates metric graphs based on spreadsheet data and exports those graphs to pdf files in a specific folder.  It then creates a google doc file with all the graphs in it, loaded in the intended order for posting on the metric board.  This script is executed from a button.
 
 Concepts implemented:
 - Custom charting with columns and lines
