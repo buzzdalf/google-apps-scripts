@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons.css">
+    <style>
+      div.gray  {
+        background-color: #eee;
+      }
+      div.center {
+        text-align: center;
+      }
+      p {
+        font-size: 16px;
+        font-weight: bold;
+        color: #000066;
+      }
+    </style>
+  </head>
+  <body>
+  <div class="sidebar block">
+    <button type="button" class="" onclick="google.script.host.close()">Close Analysis Menu</button>
+    <br>
+    <h2>Follow these steps</h2>
+    <div class="gray">
+      <br>
+      <p>1.0 Enter data in input tab</p>
+      <p>2.0 Click button to setup sheets</p>
+      <div class="center">
+        <button type="button" class="share" onclick="google.script.run.setupSheets()">Generate Sampling Plan</button>
+      </div>
+      <br>
+      <p>3.0 Enter data in DataTable tab</p>
+      <p>4.0 Choose analysis method</p>
+      <div class="center">
+        <button type="button" class="action" onclick="google.script.run.analyzeMSE()">Analyze as MSE</button>
+        <button type="button" class="action" onclick="google.script.run.analyzeCOV()">Analyze as COV</button>
+      </div>
+      <br>
+    </div>
+  </div>
+  <div class="sidebar bottom">
+    <img src="https://ci3.googleusercontent.com/proxy/6x0mguYjwNvGEkY0pn6T3eVaR1YKbBPMSXkEOxdagCvFPZ4cEHOgN8omPUpJjz2N6j4m1YTy03Ttqu4QAez-6QyBx_baFGav_DH-gM3lUF5M_1tdabmg-ywXK78u8NAQ=s0-d-e1-ft#https://docs.google.com/uc?id=0B8IslKo9X5u3UkIyd2xncHdoeTA&export=download" height="55" class="top-right"/>
+    <br>
+    <br>
+    <img alt="Add-on logo" width="25" src="https://googledrive.com/host/0B0G1UdyJGrY6XzdjQWF4a1JYY1k/apps-script_2x.png"/>
+    <span class="gray">by: Bill Steinberger, ver: 04/01/2016</span>
+  </div>
+</body>
+</html>
+
+
