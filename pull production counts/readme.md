@@ -5,3 +5,5 @@ Concepts implemented:
 - searches spreadsheet for dates in a cell (including the year)
 - copy data from one sheet to another based on date search
 - moves active cell to current date
+
+This script is tied to: https://docs.google.com/spreadsheets/d/1CnMId9KbIvF5J1eW6Nou8RQDlVzr-diC28M3RUmUNao

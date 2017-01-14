@@ -5,3 +5,5 @@ Concepts implemented:
 - Searching google calendar for events
 - modifying calendar entry
 - email
+
+This script is tied to the following sheet: https://docs.google.com/spreadsheets/d/1q7J9aHqc70fXQtgmITpepv12ByyzRa6-YkOoS3j-Iyo

@@ -7,3 +7,5 @@ Concepts implemented:
 - email with doc file attached
 
 current issues with the script:  The pdf export uses data from 1 export iteration old, not current data.  I am currently running the script twice via different starting functions and only emailing after the second run.  I tried to just iterate the script twice via one run of the script, but even that didn't work.  I also tried delaying the export up to 30 seconds in case I was outpacing drive, but that didn't work either.
+
+This script is tied to: https://docs.google.com/spreadsheets/d/1YVpdQnlTKAsNE-OukTLW9GoOOa75cYiXlUxiLuLRKrQ

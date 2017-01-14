@@ -4,3 +4,5 @@ Concepts implemented:
 - random selection
 - finding the max and min in a range
 - incrementing to avoid duplicate winners
+
+This script is tied to: https://docs.google.com/spreadsheets/d/1eAeBuKo1iJwYQf3p9A0qbysIy4oUNspPWURDWUQnwgc

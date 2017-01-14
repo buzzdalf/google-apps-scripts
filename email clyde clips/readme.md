@@ -4,3 +4,5 @@ Concepts implemented:
 - compile email addresses based on cell contents
 - Finding files in drive based on dates
 - email with doc file attached
+
+This script is tied to: https://docs.google.com/spreadsheets/d/127oePQkBXvBYdCgG_0US9bRspLdluW2Es5mzETP3BpQ

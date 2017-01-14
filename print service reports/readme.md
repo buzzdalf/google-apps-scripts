@@ -5,3 +5,7 @@ Concepts implemented:
 - populate form tabs based on menu selection from currently selected row
 - create a sub-folder on the drive to house the pdf files
 - export spreadsheet forms to pdf to the new sub-folder directly
+
+These scripts are tied to:
+tied to: https://docs.google.com/spreadsheets/d/175PdflO3MNEDW3MVkqgl-wDy5RV2PA2aok1BUsyiN8E
+tied to: https://docs.google.com/spreadsheets/d/12DNpG2ImTqx8vaIJ1AzFU6GfcCXJ6v-0sHM9L_-16Yw

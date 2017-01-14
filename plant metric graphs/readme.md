@@ -11,3 +11,5 @@ Concepts implemented:
 - combining pdf graphs into google doc
 - utilize drive API to update files vs create new ones, in order to retain file ID's over time
 - check's if drive API permissions available for update, and if not does a create/delete to move files
+
+This script is tied to: https://docs.google.com/spreadsheets/d/1SOrneK8pr6T0M_Yhbrpr97sgfuBh9U2_oI7cqSjoLCA

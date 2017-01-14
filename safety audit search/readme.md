@@ -8,3 +8,5 @@ Concepts implemented:
 - Building drop down lists in a sidebar dynamically based on spreadsheet data
 - saving/retrieving user properties to build menus
 - hiding/displaying sidebar elements based on search criteria
+
+This script is tied to: https://docs.google.com/spreadsheets/d/1Oh4z8oHqlpbokIz2HftcLMAzK6_yFJmWbL3jBbu2Byk
