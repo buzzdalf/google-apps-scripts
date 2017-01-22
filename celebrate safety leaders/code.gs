@@ -9,7 +9,7 @@
 //this section of code works in spreadsheet
 var ss = SpreadsheetApp.getActiveSpreadsheet();
 var results = [];
-var doc = 'celebrate.pdf';
+var doc = 'weekly celebrate.pdf';
 
 //function runTwice() {
 //  for (var i=0;i<2;i++) {

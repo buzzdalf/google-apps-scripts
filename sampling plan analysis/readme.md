@@ -4,7 +4,7 @@ Concepts implemented:
 - building spreadsheets based on cell names
 - filtering non-numeric and blank data out of array to isolate numbers for calculation
 - converting spreadsheet data into arrays for manipulation, then writing the arrays back into spreadsheet
-- array usage greatly increases the speed of execution vs trying to do everythign strictly using the spreadsheets for data
+- array usage greatly increases the speed of execution vs trying to do everything strictly using the spreadsheets for data
 - calcuation of min, max, range, averages of multi-dimensionsal array data
 - custom sidebar for analysis
 - alert dialog while script runs to hold the user and prevent issues with execution
