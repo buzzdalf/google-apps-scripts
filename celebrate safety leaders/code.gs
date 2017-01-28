@@ -11,17 +11,6 @@ var ss = SpreadsheetApp.getActiveSpreadsheet();
 var results = [];
 var doc = 'weekly celebrate.pdf';
 
-//function runTwice() {
-//  for (var i=0;i<2;i++) {
-//    findNames();
-//    moveList();
-//    prepDoc();
-//    var url = savePdf(doc);
-//    Utilities.sleep(2000);
-//  }
-//  //  sendEmail(url);
-//}
-
 function runFirst() {
   findNames();
   moveList();
@@ -90,13 +79,7 @@ function prepDoc() {
   return;
 }
 
-//function savePdf(doc) {
-//  var fileUrl = doc.getUrl();
-//  sendTemp(fileUrl);
-//}
-
 function savePdf(doc) {
-  //var url = doc.getUrl().replace(/edit$/,''); //does this work with the $?
   var url = 'https://docs.google.com/document/d/'+fileID;
   var url_ext = '/export?exportFormat=pdf&format=pdf';   //export as pdf
 //  + '&gid=' + sheet.getSheetId()   //the sheet's Id
@@ -132,28 +115,6 @@ function deleteFile(fileName) {
   }
 }
 
-//this function is a test to find all files by a search criteria
-//function deleteFile(fileName) {
-//  var searchFor ='title contains "weekly celebrate.pdf"';
-//  var names =[];
-//  var files = DriveApp.searchFiles(searchFor);
-//  while (files.hasNext()) {
-//    var file = files.next();
-//    names.push(file.getName());
-//    var fileId = file.getId();
-//    Logger.log(file);
-////    Drive.Files.remove(fileId);
-//  }
-////  var folders = DriveApp.searchFolders(searchFor);
-////  while (folders.hasNext()) {
-////    var file = folders.next();
-////    names.push(file.getName());
-////  }
-////  for (var i=0;i<names.length;i++){
-////    Logger.log(names[i]);
-////  }
-//}
-
 function sendEmail(url) {
   //send email out to folks so they know the file is ready to use
   var email = 'heather_r_kastor@whirlpool.com,william_f_steinberger@whirlpool.com';
@@ -161,20 +122,6 @@ function sendEmail(url) {
   var body = "Hello, "+email+'\n'+'\n'+
     "The weekly safety celebrate file is ready to put on Clyde TV"+'\n'+
       "Here is a link to the updated file for importing:"+'\n'+
-        url+'\n'+'\n'+
-          "Here is a link to the folder the file is stored in in case you need that:"+'\n'+
-          "https://drive.google.com/drive/u/0/folders/0BxiuqJYDWNpkV3FBSmVJZHZuWXM";
-  MailApp.sendEmail(email, subject, body);
-}
-
-function sendTemp(url) {
-  //send email out to folks so they know the file is ready to use
-  var email = 'heather_r_kastor@whirlpool.com,william_f_steinberger@whirlpool.com';
-  var subject = 'Temp Weekly Safety Celebrate Updated';
-  var body = "Hello, "+email+'\n'+'\n'+
-    "This is a temporary process to use for Clyde TV until I figure out the pdf issue."+'\n'+
-    "The weekly safety celebrate file is ready to convert to pdf for Clyde TV"+'\n'+
-      "Here is a link to the updated file for converting:"+'\n'+
         url+'\n'+'\n'+
           "Here is a link to the folder the file is stored in in case you need that:"+'\n'+
           "https://drive.google.com/drive/u/0/folders/0BxiuqJYDWNpkV3FBSmVJZHZuWXM";
