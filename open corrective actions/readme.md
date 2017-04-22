@@ -9,5 +9,6 @@ Concepts implemented:
 - Check date based on cell contents
 - sorts ranges
 - clears ranges
+- email error logging to a logging spreadsheet
 
 This script is tied to: https://docs.google.com/a/whirlpool.com/spreadsheets/d/1R-D7gBguUtWntgli6aq-CSYnWYZ_yXYopcHnnjzk4ds

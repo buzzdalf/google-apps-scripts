@@ -35,6 +35,7 @@ function findSheets() {
   var environmentSheet = ss.getSheetByName('Environment');
   var equipmentSheet = ss.getSheetByName('Equipment');
   var materialsSheet = ss.getSheetByName('Materials');
+  var walkingSheet = ss.getSheetByName('Walking-Working Surfaces');
 
   var environmentData = environmentSheet.getDataRange().getValues();
   var environmentOpen = findOpen(environmentData,'Environment');
@@ -44,6 +45,9 @@ function findSheets() {
 
   var materialsData = materialsSheet.getDataRange().getValues();
   var materialsOpen = findOpen(materialsData,'Materials');
+  
+  var walkingData = walkingSheet.getDataRange().getValues();
+  var walkingOpen = findOpen(walkingData,'Walking-Working Surfaces');
   
   sortSheet(outputSheet);
   sortSheet(pastdueSheet);
@@ -61,11 +65,11 @@ function findOpen(data,audit) {
   var shiftCol = findColumn('Shift',data);
   var observerCol = findColumn('Observer Name',data);
   var buCol = findColumn('Business Unit',data);
-  var ca1DescCol = findColumn('Corrective Action 1 Description',data);
+  var ca1DescCol = findColumn('Corrective Action 1 Description',data) || findColumn('Corrective Action 1 Decription',data);
   var ca1RespCol = findColumn('Corrective Action 1 Responsible Party',data);
   var ca1DueCol = findColumn('Corrective Action 1 Due Date',data);
   var ca1CompCol = findColumn('Corrective Action 1 Completion Date',data);
-  var ca2DescCol = findColumn('Corrective Action 2 Description',data);
+  var ca2DescCol = findColumn('Corrective Action 2 Description',data) || findColumn('Corrective Action 2 Decription',data);
   var ca2RespCol = findColumn('Corrective Action 2 Responsible Party',data);
   var ca2DueCol = findColumn('Corrective Action 2 Due Date',data);
   var ca2CompCol = findColumn('Corrective Action 2 Completion Date',data);
@@ -73,6 +77,11 @@ function findOpen(data,audit) {
   var ca3RespCol = findColumn('Corrective Action 3 Responsible Party',data);
   var ca3DueCol = findColumn('Corrective Action 3 Due Date',data);
   var ca3CompCol = findColumn('Corrective Action 3 Completion Date',data);
+  var ca4DescCol = findColumn('Corrective Action 4 Description',data);
+  var ca4RespCol = findColumn('Corrective Action 4 Responsible Party',data);
+  var ca4DueCol = findColumn('Corrective Action 4 Due Date',data);
+  var ca4CompCol = findColumn('Corrective Action 4 Completion Date',data);
+  
  
   for (var i=1;i<data.length;i++) {
     var anyOpen = data[i][anyopenCol];
@@ -91,6 +100,10 @@ function findOpen(data,audit) {
       }
       var isThreeOpen = checkOpen(data[i][ca3DueCol],data[i][ca3CompCol]);
       if (isThreeOpen) {
+        openCount++;
+      }
+      var isFourOpen = checkOpen(data[i][ca4DueCol],data[i][ca4CompCol]);
+      if (isFourOpen) {
         openCount++;
       }
       
@@ -118,11 +131,16 @@ function findOpen(data,audit) {
             temp10 = ca2RespCol;
             temp11 = ca2DueCol;
             temp12 = ca2CompCol
-          } else {
+          } else  if (isThreeOpen) {
             temp9 = ca3DescCol;
             temp10 = ca3RespCol;
             temp11 = ca3DueCol;
             temp12 = ca3CompCol
+          } else {
+            temp9 = ca4DescCol;
+            temp10 = ca4RespCol;
+            temp11 = ca4DueCol;
+            temp12 = ca4CompCol
           }
         }
         
@@ -132,20 +150,40 @@ function findOpen(data,audit) {
             temp10 = ca2RespCol;
             temp11 = ca2DueCol;
             temp12 = ca2CompCol
-          } else {
+          } else  if (isThreeOpen) {
             temp9 = ca3DescCol;
             temp10 = ca3RespCol;
             temp11 = ca3DueCol;
             temp12 = ca3CompCol
+          } else {
+            temp9 = ca4DescCol;
+            temp10 = ca4RespCol;
+            temp11 = ca4DueCol;
+            temp12 = ca4CompCol
           }
         }
         
         if (j == 2) {
-          temp9 = ca3DescCol;
-          temp10 = ca3RespCol;
-          temp11 = ca3DueCol;
-          temp12 = ca3CompCol
+          if (isThreeOpen) {
+            temp9 = ca3DescCol;
+            temp10 = ca3RespCol;
+            temp11 = ca3DueCol;
+            temp12 = ca3CompCol
+          } else {
+            temp9 = ca4DescCol;
+            temp10 = ca4RespCol;
+            temp11 = ca4DueCol;
+            temp12 = ca4CompCol
+          }
         }
+        
+        if (j == 3) {
+            temp9 = ca4DescCol;
+            temp10 = ca4RespCol;
+            temp11 = ca4DueCol;
+            temp12 = ca4CompCol
+          }
+        
         output[0][9] = data[i][temp9]; //description
         output[0][10] = data[i][temp10]; //responsible party
         output[0][11] = data[i][temp11]; //due date
@@ -204,7 +242,9 @@ function checkOpen(exist,complete) {
 // find columns based on labels and returns the column number
 function findColumn(criteria,data) {
   for (i=1;i<=data[0].length;i++) {
-    var test = (data[0][i].trim());
+    if (data[0][i]) {
+      var test = (data[0][i].trim());
+    } else {var test = ""};
     if (data[0][i] == criteria || test == criteria) {
       return i;
     } 
@@ -241,7 +281,11 @@ function sendEmail() {
       '(this is an automated message, if errors please notify your facilitator).';
   
 //  Logger.log(email+' '+replyTo+' '+subject+' '+body);
-  MailApp.sendEmail(email, replyTo, subject, body);
+  try {
+    MailApp.sendEmail(email, replyTo, subject, body);
+  } catch (e) {
+    logError(e);
+  }
 }
 
 // this function sends the past due email for each item
@@ -281,10 +325,49 @@ function sendPastDue(email,data) {
     '(this is an automated message, if errors please notify your facilitator).';
   
 //  Logger.log(email+' '+replyTo+' '+subject+' '+body);
-  MailApp.sendEmail(email, replyTo, subject, body);
+  try {
+    MailApp.sendEmail(email, replyTo, subject, body);
+  } catch (e) {
+    logError(e);
+  }
 }
 
 
+// the functions below are for email error handling
+function logError(e) {
+  var url = activeUrl();
+  var email = "william_f_steinberger@whirlpool.com";
+  
+  MailApp.sendEmail(email, "Error report", 
+                    "\r\nMessage: " + url
+                    + "\r\nMessage: " + e.message
+                    + "\r\nFile: " + e.fileName
+                    + "\r\nLine: " + e.lineNumber);
+  
+  var errorSheet = SpreadsheetApp.openById('1AQxAvsMs6LF3qgFQFeVaSKIZr6xEV4YRMPYXHFhPRgI').getSheetByName('Errors');
+  lastRow = errorSheet.getLastRow();
+  var cell = errorSheet.getRange('A1');
+  cell.offset(lastRow, 0).setValue(url);
+  cell.offset(lastRow, 1).setValue(e.message);
+  cell.offset(lastRow, 2).setValue(e.fileName);
+  cell.offset(lastRow, 3).setValue(e.lineNumber);
+}
+function activeUrl() {
+  var url, ss, doc, form;
+  
+  ss = SpreadsheetApp.getActiveSpreadsheet();
+  doc = DocumentApp.getActiveDocument();
+  form = FormApp.getActiveForm();
+  
+  if (ss != null && ss != undefined)
+    url = ss.getUrl();
+  else if (doc != null && doc != undefined)
+    url = doc.getUrl();
+  else if (form != null && form != undefined)
+    url = form.getUrl();
+  Logger.log(url);
+  return url;
+}
 
 // this is a test function used to debug the past due emails without rebuilding the whole spreadsheet.  It is not normally used
 function testPastDue() {
