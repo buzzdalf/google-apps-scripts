@@ -1,18 +1,41 @@
 /*
 * Script to autmoatically email folks the Clyde Clips
 * on a scheduled basis
-* Setup Trigger to run findEmails() Daily at Midnight to 1AM
+* Setup Trigger to run runTomorow() Daily at 9 PM to look for tomorrow's date)
 * tied to: https://docs.google.com/spreadsheets/d/127oePQkBXvBYdCgG_0US9bRspLdluW2Es5mzETP3BpQ
-* Last edit 1/7/17 by: Bill Steinberger
+* Last edit 6/12/17 by: Bill Steinberger
 */
 
+function onOpen() {
+SpreadsheetApp.getUi()
+.createMenu('Send E-mails')
+.addItem('Run Email Script for Yesterday', 'runYesterday')
+.addItem('Run Email Script for Today', 'runToday')
+.addItem('Run Email Script for Tomorrow', 'runTomorrow')
+.addToUi();
+}
+
+function runYesterday() {
+  findEmails(-1);
+}
+
+function runToday() {
+  findEmails(0);
+}
+
+function runTomorrow() {
+  findEmails(1);
+}
+
 // this function extracts all the emails from a list in a spreadsheet and calls a function to send an email to each one
-function findEmails(data) {
+function findEmails(days) {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet= ss.getSheetByName('emails');
   var data = sheet.getDataRange().getValues();
   var start = findList(data);
-  var file = getClips();
+  var file = getClips(days);
+  
+//  Logger.log(file);
   
   if (file != null) {
     var emailArray = [];
@@ -27,7 +50,8 @@ function findEmails(data) {
     sendEmail(emailArray,file);
     sentClips(file);
   } else {
-    nothingFound();
+    var ssUrl = ss.getUrl();
+    nothingFound(ssUrl);
   }
 }
 
@@ -44,7 +68,7 @@ function findList(data) {
 }
 
 //this function finds a file in a specific folder and checks to see if the file has today's day and month in the title
-function getClips() {
+function getClips(days) {
   var folderID = '0B6zO-pLqjfSNY1MtZzFtZFVzVWc'; //https://drive.google.com/drive/folders/0B6zO-pLqjfSNY1MtZzFtZFVzVWc?usp=sharing
   var folder = DriveApp.getFolderById(folderID);
   var contents = folder.getFiles();
@@ -55,7 +79,7 @@ function getClips() {
     var fileName = file.getName();
     var fileId = file.getId();
     var fileUrl = file.getUrl();
-    date = getDate();
+    date = getDate(days);
 //    Logger.log (fileName+' '+(date.date)+' '+fileName.indexOf(date.date)+' '+date.string+' '+fileName.indexOf(date.string));
     if ((fileName.indexOf(date.date) > 7 && fileName.indexOf(date.date) < 12) || (fileName.indexOf(date.string) > 7 && fileName.indexOf(date.string) < 12)){ 
 //      Logger.log('true');
@@ -67,11 +91,12 @@ function getClips() {
 }
 
 // this function gets today's date and returns the day and month
-function getDate() {
+function getDate(days) {
   var fullDate = {};
-  var now = new Date();
-  var day = now.getDate();
-  var month = now.getMonth()+1;
+  var now = new Date(); 
+  var tomorrow = new Date(now.getTime() + (days * (1000 * 60 * 60 * 24))); //changed script to look for TOMORROW'S date so I can run the script on Sunday night vs Monday morning
+  var day = tomorrow.getDate();
+  var month = tomorrow.getMonth()+1;
   fullDate.date = month + "/" + day;
   if (day < 10) {
     fullDate.string = month + '/0'+day;
@@ -105,12 +130,14 @@ function sentClips(url) {
   MailApp.sendEmail(email, subject, body);
 }
 
-function nothingFound() {
+function nothingFound(url) {
   var email = 'william_f_steinberger@whirlpool.com';
   var subject = 'No Clyde Clips Today';
   var body = "Hello, "+'\n'+
     "The Clyde Clips Script ran today, but there was no file found to send.  Here is the folder I looked at:"+'\n'+'\n'+
-      'https://drive.google.com/drive/folders/0B6zO-pLqjfSNY1MtZzFtZFVzVWc?usp=sharing'+'\n'+'\n'+
+      'https://drive.google.com/drive/folders/0B6zO-pLqjfSNY1MtZzFtZFVzVWc?usp=sharing'+'\n'+
+        'Here is the script spreasheet in case you need to run it manually:'+'\n'+
+          url+'\n'+'\n'+
           "Thank you."+'\n'+
         "(this is an automated message, if errors please simply notify your facilitator).";
   MailApp.sendEmail(email, subject, body);

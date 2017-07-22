@@ -28,8 +28,10 @@ function catchUp() {
     }
     if ( flag !== 'Yes') {
       addRow(i+1);
-      buildEmail(i+1,emailTemplate);
-      labelYes(i+1,rawData);
+      var sent = buildEmail(i+1,emailTemplate);
+      if (sent) {
+        labelYes(i+1,rawData);
+      }
     }
   }
 }
@@ -44,8 +46,10 @@ function collectInfo(e) {
     }
   }
   addRow(i);
-  buildEmail(i,emailTemplate);
-  labelYes(i,rawData);
+  var sent = buildEmail(i,emailTemplate);
+  if (sent) {
+    labelYes(i,rawData);
+  }
 }
 
 function labelYes(key,rawData) {
@@ -78,7 +82,8 @@ function buildEmail(key,template) {
       parties.push(partyExist);
     }
   }
-  sendEmail(key,emails,emailText,parties);
+   var sent = sendEmail(key,emails,emailText,parties);
+  return sent;
 }
 
 function getEmail(list,name) {
@@ -106,8 +111,10 @@ function sendEmail(row,email,body,parties) {
   //  Logger.log(email+' '+replyTo+' '+subject+' '+ plainBody, {htmlBody:body});
   try {
     MailApp.sendEmail(email, subject, plainBody, {htmlBody:body, replyTo:replyTo});
+    return true;
   } catch (e) {
     logError(e);
+    return false;
   }
 }
 

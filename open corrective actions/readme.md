@@ -10,5 +10,6 @@ Concepts implemented:
 - sorts ranges
 - clears ranges
 - email error logging to a logging spreadsheet
+- test function to build database and test functionality without having to redo everything
 
 This script is tied to: https://docs.google.com/a/whirlpool.com/spreadsheets/d/1R-D7gBguUtWntgli6aq-CSYnWYZ_yXYopcHnnjzk4ds

@@ -1,5 +1,6 @@
 /*
-*  This script is tied to: https://docs.google.com/spreadsheets/d/1Z9jJ0pVl7XvlkGe-ohWR55j-lE0jhMcdexFhzAPYDgg 
+* To automate emailing the results of this scripting, set a trigger to run pdfEmail
+* This script is tied to: https://docs.google.com/spreadsheets/d/1Z9jJ0pVl7XvlkGe-ohWR55j-lE0jhMcdexFhzAPYDgg 
 */
 
 var destID = '1Z9jJ0pVl7XvlkGe-ohWR55j-lE0jhMcdexFhzAPYDgg';
@@ -24,24 +25,29 @@ function pdfEmail() {
 }
 
 function getSewos(sending) {
-  var sewoFolder = '0BxiuqJYDWNpkWVRmNFd0MEJYMHc';
-  var folder = DriveApp.getFolderById(sewoFolder);
-  var search = 'title contains "SEWO" and mimeType contains "spreadsheet" and not title contains "Form Master" and not title contains "Export"';
-  //  var search = 'mimeType contains "spreadsheet" and (modifiedDate > "' + startTime.start + '") and not title contains "Form Master" and not title contains "test"';
-  var alerts = searchFolder(folder,search);
-  var text = '';
-  var files = [];
-  if (alerts.length > 0) {
-    for (var i=0;i<alerts.length;i++) {
-      var file = tryMe(alerts[i]);
-      if (file) {
-        files.push(file.getAs(MimeType.PDF));
+  var weekday = isWeekday();
+  if (weekday) {
+    var sewoFolder = '0BxiuqJYDWNpkWVRmNFd0MEJYMHc';
+    var folder = DriveApp.getFolderById(sewoFolder);
+    var search = 'title contains "SEWO" and mimeType contains "spreadsheet" and not title contains "Form Master" and not title contains "Export"';
+    //  var search = 'mimeType contains "spreadsheet" and (modifiedDate > "' + startTime.start + '") and not title contains "Form Master" and not title contains "test"';
+    var alerts = searchFolder(folder,search);
+    var text = '';
+    var files = [];
+    if (alerts.length > 0) {
+      for (var i=0;i<alerts.length;i++) {
+        var file = tryMe(alerts[i]);
+        if (file) {
+          //        files.push(file.getAs(MimeType.PDF));
+          files.push(file);
+        }
+        //      tryMe(alerts[i]);
       }
-//      tryMe(alerts[i]);
-    }
-    Logger.log(files);
-    if (sending) {
-      sendEmail(files);
+//      Logger.log(files);
+      if (sending && (files.length > 0)) {
+        sendEmail(files);
+//        Logger.log('sending email');
+      }
     }
   }
 }
@@ -58,24 +64,21 @@ function tryMe(alert) {
   var mailSheet = ss.getSheetByName(mailName);
   var mailID = mailSheet.getSheetId();
   
-  var range = "a25:z300";
-  var name = "G6";
-  var id = "I6";
-  
+  var sewoTest = mailSheet.getRange("D3").getValue();
   var fatality = mailSheet.getRange("E3").getValue();
   var lostTime = mailSheet.getRange("E4").getValue();
   var recordable = mailSheet.getRange("E5").getValue();
   
+  var noteRange = mailSheet.getRange("E3:E5");
+  noteRange.clearNote();
+  
   var pdfName = "Clyde - " + alert.name;
   
-  if (fatality != '' || lostTime != '' || recordable != '') {
+  if (sewoTest == 'Fatality' && (fatality != '' || lostTime != '' || recordable != '')) {
     
-    Logger.log('found one');
+//    Logger.log('found one');
     
-    mailSheet.getRange(name).clearContent();
-    mailSheet.getRange(id).clearContent();
-    mailSheet.getRange(range).clearContent();
-    mailSheet.deleteRows(25,300);
+    clearRanges(mailSheet); 
     
     var fileName = savePDFs(destID, mailID, pdfName );
   }
@@ -85,29 +88,49 @@ function tryMe(alert) {
   return fileName;
 }
 
+function clearRanges(mailSheet) {
+  var range = ['G6','I6','B27:O34','B51:O60','B62:O66','B68:O70','B81:O90']
+  
+  for (var i=0;i<range.length;i++) {
+    mailSheet.getRange(range[i]).clearContent();
+  }
+}
+
 function sendEmail(myFiles) {
   var emailSheet = ss.getSheetByName('Standard E-Mail Text');
   var body = emailSheet.getRange("A4").getValue();
   var subject = emailSheet.getRange("A2").getValue();
   var emails = findEmails(emailSheet);
+  
+  for (var i=0;i<myFiles.length;i++) {
+    body += ' '+myFiles[i]+'\n';
+  }
 
-  Logger.log(emails+' '+subject+' '+ body+' '+myFiles);
+//  Logger.log(emails+' '+subject+' '+ body);//+' '+myFiles);
   try {
-    MailApp.sendEmail(emails, subject, body, {attachments: myFiles});
+    MailApp.sendEmail(emails, subject, body);//, {attachments: myFiles});
   } catch (e) {
     logError(e);
   }
 }
 
+function isWeekday() {
+  var today =  new Date();
+  //Skip week-end 6=Sat, 0=Sun, 1=Mon
+  if (today.getDay()==1 || today.getDay()==0) {
+    return false;
+  }
+  return true;
+}
+
 // this function extracts all the emails from a list in a spreadsheet and calls a function to send an email to each one
 function findEmails(sheet) {
-//  var sheet= ss.getSheetByName('E-Mail Disitribution List');
-  var sheet= ss.getSheetByName('Test E-Mail List');
+  var sheet= ss.getSheetByName('E-Mail Disitribution List');
+//  var sheet= ss.getSheetByName('Test E-Mail List'); //this line is for testing changes
   var data = sheet.getDataRange().getValues();
   var emailList = [];
   
   for (var i=0; i<data.length; i++) {
-//    var cell = [i,1]; //is this old, leftover code?  try removing on next edit
     var email = data[i][0];
     if (email.indexOf('@') !== -1) {
       emailList.push(email);
@@ -175,15 +198,21 @@ function savePDFs( optSSId, optSheetId, pdfName ) {
 
     var response = UrlFetchApp.fetch(url + url_ext, options);
 
-//    var blob = response.getBlob().setName(ss.getName() + ' - ' + sheet.getName() + '.pdf');
-
+    //    var blob = response.getBlob().setName(ss.getName() + ' - ' + sheet.getName() + '.pdf');
+    
     var blob = response.getBlob().setName(pdfName + '.pdf');
-
+    
     //from here you should be able to use and manipulate the blob to send and email or create a file per usual.
     //In this example, I save the pdf to drive
-    folder.createFile(blob);
+    //    folder.createFile(blob);
+    var pdfFile = folder.createFile(blob);
+    pdfFile.setSharing(DriveApp.Access.DOMAIN_WITH_LINK, DriveApp.Permission.VIEW);
+
+    var url = pdfFile.getUrl(); 
+    
   }
-  return blob;
+  //  return blob;
+  return url;
 }
 
 /**

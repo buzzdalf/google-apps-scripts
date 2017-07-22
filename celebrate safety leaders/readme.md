@@ -1,11 +1,6 @@
-This script finds a list of rows based on dates in a spreadsheet.  It copies summary information from each row into a new tab, and also into a google doc file.  Then it exports the google doc to a pdf and emails the file to someone so they can publish the pdf. This script executes on a scheduled trigger.
+This script compares 2 lists (each on a different tab) and outputs the unique values that are not common among the 2 lists on a 3rd tab.
 Concepts implemented:
-- Finding cells based on dates
-- clearing, copying to doc file
-- deleting files from drive
-- exporting to pdf in a specified drive folder
-- email with doc file attached
+- Searches through arrays for matches
+- outputting an array to a spreadsheet
 
-current issues with the script:  The pdf export uses data from 1 export iteration old, not current data.  I am currently running the script twice via different starting functions and only emailing after the second run.  I tried to just iterate the script twice via one run of the script, but even that didn't work.  I also tried delaying the export up to 30 seconds in case I was outpacing drive, but that didn't work either.
-
-This script is tied to: https://docs.google.com/spreadsheets/d/1YVpdQnlTKAsNE-OukTLW9GoOOa75cYiXlUxiLuLRKrQ
+This script is tied to: https://docs.google.com/spreadsheets/d/1eCSUI0N_WJ8xgxF_Tl9_PEq5kbTKs14volcW9qEteHs

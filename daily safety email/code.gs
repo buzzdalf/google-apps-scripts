@@ -3,13 +3,16 @@
 */
 
 function runAll() {
-  var startTime = getStartTime();
-  var incidents = getIncidents(startTime);
-  var alerts = getAlerts(startTime);
-  var sewo = getSewos(startTime);
-  var data = dailyUpdate();
-  var emails = findEmails();
-  sendEmail(incidents, alerts, sewo, data, emails);
+  var weekday = isWeekday();
+  if (weekday) {
+    var startTime = getStartTime();
+    var incidents = getIncidents(startTime);
+    var alerts = getAlerts(startTime);
+    var sewo = getSewos(startTime);
+    var data = dailyUpdate();
+    var emails = findEmails();
+    sendEmail(incidents, alerts, sewo, data, emails);
+  }
 }
 
 function getIncidents(startTime) {
@@ -19,7 +22,7 @@ function getIncidents(startTime) {
   var alerts = searchFolder(folder,search);
   var text = '';
   if (alerts.length > 0) {
-    text = 'Clyde had '+alerts.length+' safety incidents in the last 24 hours.  The incidents are listed and attached here:'+'\n';
+    text = 'I found '+alerts.length+' safety incidents from the last 24 hours.  The incidents are listed and attached here:'+'\n';
     for (var i=0;i<alerts.length;i++) {
       text += alerts[i].name+': '+alerts[i].url+'\n';
     }
@@ -31,7 +34,7 @@ function getIncidents(startTime) {
 }
 
 function getAlerts(startTime) {
-  var alertFolder = '0BxiuqJYDWNpkaVdxWU1pYjR3Mnc';
+  var alertFolder = '0BxiuqJYDWNpkdnFKTmMyak0tUkk';
   var folder = DriveApp.getFolderById(alertFolder);
   //var search = 'title contains "Safety Alert" and title contains "'+startTime.year+'" and mimeType contains "spreadsheet" and (modifiedDate > "' + startTime.start + '")';
   var search = 'mimeType contains "spreadsheet" and (modifiedDate > "' + startTime.start + '")';
@@ -40,7 +43,7 @@ function getAlerts(startTime) {
   var alerts = searchFolder(folder,search);
   var text = '';
   if (alerts.length > 0) {
-    text = 'Clyde had '+alerts.length+' safety alerts in the last 24 hours.  The alerts are listed and attached here:'+'\n';
+    text = 'I found '+alerts.length+' safety alerts from the last 24 hours.  The alerts are listed and attached here:'+'\n';
     for (var i=0;i<alerts.length;i++) {
       text += alerts[i].name+': '+alerts[i].url+'\n';
     }
@@ -60,7 +63,7 @@ function getSewos(startTime) {
 //  Logger.log(startTime+' '+alerts);
   var text = '';
   if (alerts.length > 0) {
-    text = 'Clyde had '+alerts.length+' SEWOs in the last 24 hours.  The SEWOs are listed and attached here:'+'\n';
+    text = 'I found '+alerts.length+' SEWOs from the last 24 hours.  The SEWOs are listed and attached here:'+'\n';
     for (var i=0;i<alerts.length;i++) {
       text += alerts[i].name+': '+alerts[i].url+'\n';
     }
@@ -73,11 +76,7 @@ function getSewos(startTime) {
 
 function getStartTime() {
   var today = new Date();
-//  var weekday = isWeekday(today);
   var i = 1;
-//  if (!weekday) {
-//    i = 3;
-//  }
   var yesterday = new Date(today.getTime() - i * 25 * 60 * 60 * 1000);
   var day = yesterday.getDate();
   var month = yesterday.getMonth()+1;
@@ -150,9 +149,10 @@ function getDate(now) {
   }
 }
 
-function isWeekday(day) {
-  //Skip week-end 6=Sat, 0=Sun
-  if (day.getDay()==6 || day.getDay()==0) {
+function isWeekday() {
+  var today =  new Date();
+  //Skip week-end 6=Sat, 0=Sun, 1=Mon
+  if (today.getDay()==1 || today.getDay()==0) {
     return false;
   }
   return true;
